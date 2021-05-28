@@ -73,6 +73,9 @@ def datafromTsv(src):
                                     mss.append(ts)
                                 data[header_key][row[0]] = mss
                         else:
+                            if row[1] == "" and row[0]  not in ["Data","notes","details"]:
+                                print("In",header_key,"section -->",row[0]," is empty or indentation needs clean up")
+                                
                             if 1 < len(row):
                             	data[header_key][row[0]] = row[1]
                 elif row[0].lower() in ["data", "parameterchange","readouttype","compartment"]:
