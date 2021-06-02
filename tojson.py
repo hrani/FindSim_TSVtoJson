@@ -57,6 +57,7 @@ def getSourcefrommetadata(data, json_headkey):
                 Sourceinfo[sublistSrc] = data["Experiment context"][orgsrc]
         else:
             if sublistSrc in data[header_key]:
+
                 if sublistSrc in 'exptSource':
                     if data[header_key][sublistSrc].lower() == "paper":
                         data[header_key][sublistSrc] = 'paper'
@@ -72,6 +73,7 @@ def getSourcefrommetadata(data, json_headkey):
                         Sourceinfo[orgsrc] = data[header_key][sublistSrc]
                 else:
                     if sublistSrc in data[header_key]:
+
                         cols = data["Experiment metadata"][sublistSrc]
                         if sublistSrc == "sourceType":
                             print(data["Experiment metadata"][sublistSrc])
@@ -86,7 +88,6 @@ def getSourcefrommetadata(data, json_headkey):
                                 Sourceinfo["DOI:"] = cols[cols.lower().find("pmid: ") + 5:len(cols)]
                         if sublistSrc == "journal":
                             jour_year = (re.split(r'(\d+)', cols))
-                            print(" 72 ", jour_year, len(jour_year))
                             if jour_year:
                                 if jour_year[0]:
                                     Sourceinfo["journal"] = jour_year[0]
@@ -120,9 +121,9 @@ def metadata(data, json_headkey, jsonData, Source):
                 if sublist in "testMap":  testmap_flag = True
                 jsonData[json_headkey].update({orgsrc: data[data_headKey][sublist]})
         elif sublist in "testModel" and not testmodel_flag:
-            jsonData[json_headkey].update({"testModel": "Models/synSynth7_FMRP_19Dec2019.g"})
+            jsonData[json_headkey].update({"testModel": "Models/synSynth7.g"})
         elif sublist in "testMap" and not testmap_flag:
-            jsonData[json_headkey].update({"testMap": "Models/synSynth7_FMRP_20Dec2019.json"})
+            jsonData[json_headkey].update({"testMap": "Models/synSynth7_map.json"})
 
 
 def expt_sec(data, json_headkey, jsonData):
@@ -183,7 +184,6 @@ def stim_sect(data, json_headkey, jsonData, experimentType):
                             temp_stimdataF = {}
                             temp_stimdataF = OrderedDict()
                             # val = convert_value_stderr(fss["Data"][i][1])
-                            print(" fssdata ", fss["Data"], len(fss["Data"][i]))
                             if len(fss["Data"][i]) > 2:
                                 print(" 189 ", fss["Data"][i][2])
                                 temp_stim_data.update({"entity": fss["Data"][i][0], "value": fss["Data"][i][1],
@@ -197,7 +197,6 @@ def stim_sect(data, json_headkey, jsonData, experimentType):
                     jsonData[json_headkey] = super_temp_stimdata
 
                 elif experimentType.lower() == "doseresponse":
-                    print(" data dose response ", data[data_headKey])
                     temp_doseres = {}
                     # print(" 184 ",data[data_headKey],type(data[data_headKey]))
                     # for i in range(len(data[data_headKey])):
@@ -205,9 +204,7 @@ def stim_sect(data, json_headkey, jsonData, experimentType):
                     # barchart Pigott2012_Fig3A.tsv was not working so removed this block
                     # doseresponse yoshihara1990_fig2A not working
                     for i in range(len(data[data_headKey])):
-                        print("203 ", data[data_headKey][i])
                         for p, q in data[data_headKey][i].items():
-                            print(p, " eee ", q)
                             if p == "entities":
                                 p = "entity"
                             temp_doseres[p] = q
@@ -235,7 +232,7 @@ def stim_sect(data, json_headkey, jsonData, experimentType):
                             else:
                                 temp_stim[stv[0]] = stv[1]
                         super_temp_stimdata.append(OrderedDict(temp_stim))
-
+                        
                     jsonData[json_headkey] = (super_temp_stimdata)
                     '''
                     for vlist in data[data_headKey]:
@@ -294,6 +291,7 @@ def readout_sec(data, json_headkey, jsonData):
                 dirParadict = {"entity": hh[0], "field": elem["field"], "units": elem["quantityUnits"], "value": hh[1],
                                "stderr": hh[2]}
                 dirParalist.append(dirParadict)
+                
         jsonData[json_headkey] = OrderedDict()
         jsonData[json_headkey] = {"paramdata": dirParalist}
 
@@ -301,7 +299,6 @@ def readout_sec(data, json_headkey, jsonData):
         for qt in data[data_headKey]:
             if "quantityUnits" in qt:
                 quantityUnits = qt["quantityUnits"]
-        # print(" 235 qu", quantityUnits)
         for sublist in json_header[json_headkey]:
             orgsrc = sublist
             if sublist in changed_header.keys():
@@ -336,6 +333,7 @@ def readout_sec(data, json_headkey, jsonData):
                     else:
                         if "Data" in fs:
                             read_data = fs["Data"]
+                            print("\n343 ",read_data)
                             if convert_value_stderr(read_data[0][0]) == convert_value_stderr(RRT):
                                 sample_RRT = "start"
                             elif convert_value_stderr(read_data[0][0]) != convert_value_stderr(RRT):
@@ -390,6 +388,7 @@ def readout_sec(data, json_headkey, jsonData):
             if experimentType.lower() == "doseresponse" or experimentType.lower() == "timeseries":
                 if len(read_data):
                     temp_readdata.update({"data": read_data})
+            
         jsonData[json_headkey] = OrderedDict()
         jsonData[json_headkey] = temp_readdata
 
@@ -473,13 +472,13 @@ def tsv2Json(data, des, filename):
     json_object = json.dumps(jsonData, indent=4)
     # Writing to sample.json
     # des = '/tmp/doseresponse/json/' + filename + '.json'
-    print(" Json file written to  ", des)
+    print("TSV file converted to Json formate:  ", des)
     with open(des, "w", ) as outfile:
         outfile.write(json_object)
     # print("========================= Validating the json file =================")
 
-    validate = "python validate.py " + des + " findSimSchema.json"
-    print("## ", validate)
+    validate = "python3 validate.py " + des + " findSimSchema.json"
+    #print("## ", validate)
     t = os.system(validate)
     print("\n")
 

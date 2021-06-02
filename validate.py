@@ -16,7 +16,7 @@ def main():
 
 
     jsonschema.validate( script, schema )
-    print( "If this is the only message, then the validation was good")
+    print( "Json file is validated against schema")
 
 if __name__ == '__main__':
     main()

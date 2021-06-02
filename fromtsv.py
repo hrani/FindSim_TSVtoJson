@@ -89,7 +89,8 @@ def datafromTsv(src):
                         if foundDataBlock:
                             if len(row[0]):
                                 for col in range(dataWidth[header_key.lower()]):
-                                    t.append(convert_value_stderr(row[col]))
+                                    if row[col] != "":
+                                        t.append(convert_value_stderr(row[col]))
                                 if header_key == "Stimuli":
                                     data_stim.append(t)
                                 elif header_key == "Readouts":
