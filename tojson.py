@@ -288,8 +288,10 @@ def readout_sec(data, json_headkey, jsonData):
                 dirParadict = OrderedDict()
                 # hh1 = convert_value_stderr(hh[1])
                 # hh2 = convert_value_stderr(hh[2])
+                if len(hh ) == 2:
+                    hh.append(0)
                 dirParadict = {"entity": hh[0], "field": elem["field"], "units": elem["quantityUnits"], "value": hh[1],
-                               "stderr": hh[2]}
+                               "stderr": 0}
                 dirParalist.append(dirParadict)
                 
         jsonData[json_headkey] = OrderedDict()
@@ -381,6 +383,8 @@ def readout_sec(data, json_headkey, jsonData):
                                 testing_order.append(stimulus_data_dose_order[i])
                         # ss1 = convert_value_stderr(ss[1])
                         # ss2 = convert_value_stderr(ss[2])
+                        if len(ss) == 2:
+                            ss.append(0)
                         strtesting.append(
                             (OrderedDict({"stimulus": testing_order, "value": ss[1], "stderr": ss[2]})))
                 if len(strtesting):
